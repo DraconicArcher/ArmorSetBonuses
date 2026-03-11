@@ -31,33 +31,28 @@ public class SetPiece {
 
     public boolean verify(String armorSetName, String slotType) {
         boolean valid = true;
+
         if (!this.mustBeEmpty) {
+
             if (this.itemKey == null || this.itemKey.isEmpty() || !ModUtils.checkItemKey(this.itemKey)) {
-                ModLogger.warn("Failed to add custom armorset: " + armorSetName + ". The " + slotType + " slot is invalid!");
+                ModLogger.warn("Failed to add custom armorset: " + armorSetName +
+                        ". The " + slotType + " slot is invalid: " + this.itemKey);
                 valid = false;
             }
 
-            int var5;
-            int var6;
             if (this.mixAndMatch != null) {
-                String[] var4 = this.mixAndMatch;
-                var5 = var4.length;
+                for (String s : this.mixAndMatch) {
 
-                for(var6 = 0; var6 < var5; ++var6) {
-                    String s = var4[var6];
                     if (s == null || s.isEmpty() || !ModUtils.checkItemKey(s)) {
-                        ModLogger.warn("Failed to add custom armorset: " + armorSetName + ". " + slotType + " MixAndMatch is invalid: " + s);
+                        ModLogger.warn("Failed to add custom armorset: " + armorSetName +
+                                ". " + slotType + " MixAndMatch is invalid: " + s);
                         valid = false;
                     }
                 }
             }
 
             if (this.enchantments != null) {
-                EnchantmentCondition[] var8 = this.enchantments;
-                var5 = var8.length;
-
-                for(var6 = 0; var6 < var5; ++var6) {
-                    EnchantmentCondition e = var8[var6];
+                for (EnchantmentCondition e : this.enchantments) {
                     if (!e.verify(armorSetName, slotType)) {
                         valid = false;
                     }
@@ -179,51 +174,49 @@ public class SetPiece {
     }
 
     public boolean matches(ItemStack stack, String itemRegName) {
+
         if (this.mustBeEmpty) {
-            return itemRegName.equalsIgnoreCase("minecraft:air");
-        } else {
-            if (!stack.isEmpty() && this.enchantmentsMatch(stack) && (this.tagData == null || this.tagData.hasTag(stack))) {
-                if (this.itemKey.equalsIgnoreCase(itemRegName)) {
-                    return true;
-                }
+            return stack.isEmpty();
+        }
 
-                if (this.mixAndMatch != null) {
-                    String[] var3 = this.mixAndMatch;
-                    int var4 = var3.length;
+        if (!stack.isEmpty() && this.enchantmentsMatch(stack) &&
+                (this.tagData == null || this.tagData.hasTag(stack))) {
 
-                    for(int var5 = 0; var5 < var4; ++var5) {
-                        String s = var3[var5];
-                        if (s.equalsIgnoreCase(itemRegName)) {
-                            return true;
-                        }
-                    }
-                }
+            if (this.itemKey.equalsIgnoreCase(itemRegName)) {
+                return true;
             }
 
-            return false;
-        }
-    }
-
-    public boolean matchesSimple(String itemRegName) {
-        if (this.mustBeEmpty) {
-            return itemRegName.equalsIgnoreCase("minecraft:air");
-        } else if (this.itemKey.equalsIgnoreCase(itemRegName)) {
-            return true;
-        } else {
             if (this.mixAndMatch != null) {
-                String[] var2 = this.mixAndMatch;
-                int var3 = var2.length;
-
-                for(int var4 = 0; var4 < var3; ++var4) {
-                    String s = var2[var4];
+                for (String s : this.mixAndMatch) {
                     if (s.equalsIgnoreCase(itemRegName)) {
                         return true;
                     }
                 }
             }
-
-            return false;
         }
+
+        return false;
+    }
+
+    public boolean matchesSimple(String itemRegName) {
+
+        if (this.mustBeEmpty) {
+            return itemRegName.equalsIgnoreCase("minecraft:air");
+        }
+
+        if (this.itemKey.equalsIgnoreCase(itemRegName)) {
+            return true;
+        }
+
+        if (this.mixAndMatch != null) {
+            for (String s : this.mixAndMatch) {
+                if (s.equalsIgnoreCase(itemRegName)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public boolean enchantmentsMatch(ItemStack stack) {
