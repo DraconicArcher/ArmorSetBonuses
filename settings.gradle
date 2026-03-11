@@ -1,0 +1,11 @@
+pluginManagement {
+    repositories {
+        maven { url = "https://maven.architectury.dev/" }
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "armorsetbonuses"
+include("common")
+include("neoforge")
