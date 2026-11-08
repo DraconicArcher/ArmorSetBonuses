@@ -7,6 +7,6 @@ public class ModLifecycleEvents {
 
     @SubscribeEvent
     public void onLoadComplete(FMLLoadCompleteEvent event) {
-        // do load-complete logic here
+        
     }
 }
